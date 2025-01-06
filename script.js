@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
           content: content,
           allowHTML: true,
           animation: 'fade',
-          arrow: true,
+          arrow: false,
           trigger: 'mouseenter focus', // Ajoutez 'focus' pour les appareils tactiles
           touch: ['hold', 500], // 'hold' avec un délai de 500ms
       });
