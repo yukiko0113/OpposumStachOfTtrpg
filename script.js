@@ -31,6 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Appliquer Tippy.js à l'élément avec l'ID ddBeyond avec contenu chargé dynamiquement
   loadTooltipContent('tooltip-content.html', '#tooltip-content-ddBeyond', (content) => {
       tippy(ddBeyond, {
+          theme: 'ddBeyond',
           content: content,
           allowHTML: true,
           animation: 'fade',
