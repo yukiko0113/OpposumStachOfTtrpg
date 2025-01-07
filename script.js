@@ -1,4 +1,4 @@
-import tippy, { followCursor } from 'tippy.js/headless';
+import tippy from 'tippy.js/headless';
 
 document.addEventListener('DOMContentLoaded', () => {
     const button = document.querySelector('#myButton');
@@ -82,7 +82,7 @@ document.addEventListener('DOMContentLoaded', () => {
             theme: 'tomato',
             trigger: 'mouseenter focus',
             touch: ['hold', 500],
-            followCursor: true,
+            
         });
     });
 
@@ -99,7 +99,6 @@ document.addEventListener('DOMContentLoaded', () => {
             theme: 'ddBeyond',
             trigger: 'mouseenter focus',
             touch: ['hold', 500],
-            followCursor: true,
         });
     });
 });
