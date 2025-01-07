@@ -1,3 +1,5 @@
+import tippy, { followCursor } from 'tippy.js/headless';
+
 document.addEventListener('DOMContentLoaded', () => {
     const button = document.querySelector('#myButton');
     const ddBeyond = document.querySelector('#ddBeyond');
@@ -23,16 +25,64 @@ document.addEventListener('DOMContentLoaded', () => {
         xhr.send();
     }
 
+    // Fonction pour créer et retourner la structure DOM de la tooltip
+    function createTooltip(content, props) {
+        const popper = document.createElement('div');
+        const box = document.createElement('div');
+
+        popper.appendChild(box);
+
+        box.className = 'my-custom-class';
+        if (props.allowHTML) {
+            box.innerHTML = content;
+        } else {
+            box.textContent = content;
+        }
+
+        if (props.theme) {
+            popper.setAttribute('data-theme', props.theme);
+        }
+
+        if (props.animation) {
+            popper.setAttribute('data-animation', props.animation);
+        }
+
+        return {
+            popper,
+            onUpdate(prevProps, nextProps) {
+                if (prevProps.content !== nextProps.content) {
+                    if (nextProps.allowHTML) {
+                        box.innerHTML = nextProps.content;
+                    } else {
+                        box.textContent = nextProps.content;
+                    }
+                }
+
+                if (prevProps.theme !== nextProps.theme) {
+                    popper.setAttribute('data-theme', nextProps.theme);
+                }
+
+                if (prevProps.animation !== nextProps.animation) {
+                    popper.setAttribute('data-animation', nextProps.animation);
+                }
+            },
+        };
+    }
+
     // Appliquer Tippy.js au bouton spécifique avec contenu chargé dynamiquement
     loadTooltipContent('tooltip-contents.html', '#tooltip-content-button', (content) => {
         tippy(button, {
             content: content,
+            render(instance) {
+                return createTooltip(instance.props.content, instance.props);
+            },
             allowHTML: true,
             animation: 'fade',
             arrow: false,
             theme: 'tomato',
-            trigger: 'mouseenter focus', // Ajoutez 'focus' pour les appareils tactiles
-            touch: ['hold', 500], // 'hold' avec un délai de 500ms
+            trigger: 'mouseenter focus',
+            touch: ['hold', 500],
+            followCursor: true,
         });
     });
 
@@ -40,12 +90,16 @@ document.addEventListener('DOMContentLoaded', () => {
     loadTooltipContent('tooltip-contents.html', '#tooltip-content-ddBeyond', (content) => {
         tippy(ddBeyond, {
             content: content,
+            render(instance) {
+                return createTooltip(instance.props.content, instance.props);
+            },
             allowHTML: true,
             animation: 'fade',
             arrow: true,
             theme: 'ddBeyond',
-            trigger: 'mouseenter focus', // Ajoutez 'focus' pour les appareils tactiles
-            touch: ['hold', 500], // 'hold' avec un délai de 500ms
+            trigger: 'mouseenter focus',
+            touch: ['hold', 500],
+            followCursor: true,
         });
     });
 });
