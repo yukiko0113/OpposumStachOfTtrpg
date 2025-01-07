@@ -1,4 +1,25 @@
-import tippy from 'tippy.js/headless';
+import React from 'react';
+import './style.css';
+// import Tippy from '@tippyjs/react';
+import 'tippy.js/dist/tippy.css'; // optional
+import bootstrap from 'bootstrap';
+import Tippy from '@tippyjs/react/headless'; // different import path!
+
+export default function App() {
+  return (
+    <div className="text-center bg-dark">
+      <Tippy
+        render={attrs => (
+          <div className="box" tabIndex="-1" {...attrs}>
+            My tippy box jajaj
+          </div>
+        )}
+      >
+        <button>My button</button>
+      </Tippy>
+    </div>
+  );
+}
 
 document.addEventListener('DOMContentLoaded', () => {
     const button = document.querySelector('#myButton');
@@ -11,15 +32,20 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Fonction pour charger le contenu de la tooltip via AJAX
-    function loadTooltipContent(url, id, callback) {
+    function loadTooltipContent(url, selector, callback) {
         const xhr = new XMLHttpRequest();
         xhr.open('GET', url, true);
         xhr.onreadystatechange = function () {
             if (xhr.readyState === 4 && xhr.status === 200) {
                 const tempDiv = document.createElement('div');
                 tempDiv.innerHTML = xhr.responseText;
-                const content = tempDiv.querySelector(id).innerHTML;
-                callback(content);
+                const contentElement = tempDiv.querySelector(selector);
+                if (contentElement) {
+                    const content = contentElement.innerHTML;
+                    callback(content);
+                } else {
+                    console.error(`Element with selector ${selector} not found in the response.`);
+                }
             }
         };
         xhr.send();
@@ -47,58 +73,20 @@ document.addEventListener('DOMContentLoaded', () => {
             popper.setAttribute('data-animation', props.animation);
         }
 
-        return {
-            popper,
-            onUpdate(prevProps, nextProps) {
-                if (prevProps.content !== nextProps.content) {
-                    if (nextProps.allowHTML) {
-                        box.innerHTML = nextProps.content;
-                    } else {
-                        box.textContent = nextProps.content;
-                    }
-                }
-
-                if (prevProps.theme !== nextProps.theme) {
-                    popper.setAttribute('data-theme', nextProps.theme);
-                }
-
-                if (prevProps.animation !== nextProps.animation) {
-                    popper.setAttribute('data-animation', nextProps.animation);
-                }
-            },
-        };
+        return popper;
     }
 
-    // Appliquer Tippy.js au bouton spécifique avec contenu chargé dynamiquement
-    loadTooltipContent('tooltip-contents.html', '#tooltip-content-button', (content) => {
-        tippy(button, {
-            content: content,
-            render(instance) {
-                return createTooltip(instance.props.content, instance.props);
-            },
-            allowHTML: true,
-            animation: 'fade',
-            arrow: false,
-            theme: 'tomato',
-            trigger: 'mouseenter focus',
-            touch: ['hold', 500],
-            
-        });
+    // Utilisation de tippy.js pour créer une tooltip
+    tippy(button, {
+        content: 'Loading...',
+        allowHTML: true,
+        onShow(instance) {
+            loadTooltipContent('https://www.dndbeyond.com/', '#someSelector', (content) => {
+                instance.setContent(createTooltip(content, { allowHTML: true, theme: 'ddBeyond' }));
+            });
+        }
     });
 
-    // Appliquer Tippy.js à l'élément avec l'ID ddBeyond avec contenu chargé dynamiquement
-    loadTooltipContent('tooltip-contents.html', '#tooltip-content-ddBeyond', (content) => {
-        tippy(ddBeyond, {
-            content: content,
-            render(instance) {
-                return createTooltip(instance.props.content, instance.props);
-            },
-            allowHTML: true,
-            animation: 'fade',
-            arrow: true,
-            theme: 'ddBeyond',
-            trigger: 'mouseenter focus',
-            touch: ['hold', 500],
-        });
-    });
+    // Rendre le composant React HeadlessTippy
+    ReactDOM.render(<HeadlessTippy />, document.getElementById('react-root'));
 });
