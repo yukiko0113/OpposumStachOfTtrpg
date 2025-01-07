@@ -1,14 +1,12 @@
 .tippy-box[data-theme~='ddBeyond'] {
-  background-color: rgba(227, 227, 227, 1);
+  background-color: rgb(184, 40, 40);
   color: #000;
 }
 
 .tippy-box[data-theme~='ddBeyond'] img {
   border: 5rem;
   border-color: #af1616;
-  margin: 0;
-  padding: 0;
-  display: block;
+  object-fit: cover;
   width: 100%; 
   height: auto;
 }
