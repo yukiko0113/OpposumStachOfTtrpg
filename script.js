@@ -4,15 +4,20 @@ document.addEventListener('DOMContentLoaded', () => {
   const button = document.querySelector('#myButton');
   const ddBeyond = document.querySelector('#ddBeyond');
 
-  function loadTooltipContent(url, id, callback) {
+  function loadTooltipContent(url, selector, callback) {
       const xhr = new XMLHttpRequest();
       xhr.open('GET', url, true);
       xhr.onreadystatechange = function () {
           if (xhr.readyState === 4 && xhr.status === 200) {
               const tempDiv = document.createElement('div');
               tempDiv.innerHTML = xhr.responseText;
-              const content = tempDiv.querySelector(id).innerHTML;
-              callback(content);
+              const contentElement = tempDiv.querySelector(selector);
+              if (contentElement) {
+                  const content = contentElement.innerHTML;
+                  callback(content);
+              } else {
+                  console.error(`Element with selector ${selector} not found in the response.`);
+              }
           }
       };
       xhr.send();
