@@ -1,5 +1,5 @@
-import tippy from 'tippy.js/headless';
-import { createPopper } from '@popperjs/core';
+import tippy from 'https://unpkg.com/@tippyjs/core@2.5.4/headless/dist/tippy-headless.esm.js';
+
 
 document.addEventListener('DOMContentLoaded', () => {
   const ddBeyond = document.querySelector('#ddBeyond');
@@ -43,8 +43,8 @@ document.addEventListener('DOMContentLoaded', () => {
           },
           animation: 'fade',
           arrow: true,
-          trigger: 'mouseenter focus', // Ajoutez 'focus' pour les appareils tactiles
-          touch: ['hold', 500], // 'hold' avec un délai de 500ms
+          trigger: 'mouseenter focus',
+          touch: ['hold', 500],
       });
   });
 });

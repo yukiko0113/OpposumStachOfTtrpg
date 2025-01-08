@@ -1,15 +1,15 @@
-.tippy-box[data-theme~='ddBeyond'] {
-  background-color: rgba(227, 227, 227, 1);
-  color: #000;
+.tippy-box {
+  background-color: white;
+  color: black;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 14px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.tippy-box[data-theme~='ddBeyond'] img {
-  border: none;
-  margin: 0;
-  padding: 0;
-  display: block;
-  width: 100%; 
-  height: auto; 
+.tippy-box img {
+  max-width: 100%;
+  height: auto;
 }
 * {
   box-sizing: border-box;
