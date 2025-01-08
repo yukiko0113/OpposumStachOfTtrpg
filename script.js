@@ -1,50 +1,49 @@
-import tippy from 'https://unpkg.com/@tippyjs/core@2.5.4/headless/dist/tippy-headless.esm.js';
-
+import tippy from './node_modules/tippy.js/headless/dist/tippy-headless.esm.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   const ddBeyond = document.querySelector('#ddBeyond');
 
   function loadTooltipContent(url, selector, callback) {
-      const xhr = new XMLHttpRequest();
-      xhr.open('GET', url, true);
-      xhr.onreadystatechange = function () {
-          if (xhr.readyState === 4 && xhr.status === 200) {
-              const tempDiv = document.createElement('div');
-              tempDiv.innerHTML = xhr.responseText;
-              const contentElement = tempDiv.querySelector(selector);
-              if (contentElement) {
-                  const content = contentElement.innerHTML;
-                  callback(content);
-              } else {
-                  console.error(`Element with selector ${selector} not found in the response.`);
-              }
-          }
-      };
-      xhr.send();
+    fetch(url)
+      .then(response => response.text())
+      .then(html => {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+        const content = doc.querySelector(selector);
+        if (content) {
+          callback(content.innerHTML);
+        }
+      });
   }
 
-  // Appliquer Tippy.js à l'élément avec l'ID ddBeyond avec contenu chargé dynamiquement
   loadTooltipContent('tooltip-content.html', '#tooltip-content-ddBeyond', (content) => {
-      tippy(ddBeyond, {
-          content: content,
-          allowHTML: true,
-          render(instance) {
-              const popper = document.createElement('div');
-              const box = document.createElement('div');
-              popper.appendChild(box);
-              box.className = 'my-custom-class';
-              box.innerHTML = instance.props.content;
-              return {
-                  popper,
-                  onUpdate(prevProps, nextProps) {
-                      box.innerHTML = nextProps.content;
-                  },
-              };
-          },
-          animation: 'fade',
-          arrow: true,
-          trigger: 'mouseenter focus',
-          touch: ['hold', 500],
-      });
+    tippy(ddBeyond, {
+      content,
+      allowHTML: true,
+      render(instance) {
+        const popper = document.createElement('div');
+        const box = document.createElement('div');
+        
+        box.className = 'tippy-box';
+        box.setAttribute('data-state', 'visible');
+        box.setAttribute('tabindex', '-1');
+        box.innerHTML = instance.props.content;
+        
+        popper.appendChild(box);
+        
+        function onUpdate(prevProps, nextProps) {
+          if (prevProps.content !== nextProps.content) {
+            box.innerHTML = nextProps.content;
+          }
+        }
+
+        return {
+          popper,
+          onUpdate
+        };
+      },
+      trigger: 'mouseenter focus',
+      touch: ['hold', 500]
+    });
   });
 });
