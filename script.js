@@ -1,7 +1,7 @@
 import tippy from 'tippy.js/headless';
+import { createPopper } from '@popperjs/core';
 
 document.addEventListener('DOMContentLoaded', () => {
-  const button = document.querySelector('#myButton');
   const ddBeyond = document.querySelector('#ddBeyond');
 
   function loadTooltipContent(url, selector, callback) {
@@ -23,23 +23,24 @@ document.addEventListener('DOMContentLoaded', () => {
       xhr.send();
   }
 
-  // Appliquer Tippy.js au bouton spécifique avec contenu chargé dynamiquement
-  loadTooltipContent('tooltip-content.html', '#tooltip-content-button', (content) => {
-      tippy(button, {
-          content: content,
-          allowHTML: true,
-          animation: 'fade',
-          arrow: false,
-          trigger: 'mouseenter focus', // Ajoutez 'focus' pour les appareils tactiles
-          touch: ['hold', 500], // 'hold' avec un délai de 500ms
-      });
-  });
-
   // Appliquer Tippy.js à l'élément avec l'ID ddBeyond avec contenu chargé dynamiquement
   loadTooltipContent('tooltip-content.html', '#tooltip-content-ddBeyond', (content) => {
       tippy(ddBeyond, {
           content: content,
           allowHTML: true,
+          render(instance) {
+              const popper = document.createElement('div');
+              const box = document.createElement('div');
+              popper.appendChild(box);
+              box.className = 'my-custom-class';
+              box.innerHTML = instance.props.content;
+              return {
+                  popper,
+                  onUpdate(prevProps, nextProps) {
+                      box.innerHTML = nextProps.content;
+                  },
+              };
+          },
           animation: 'fade',
           arrow: true,
           trigger: 'mouseenter focus', // Ajoutez 'focus' pour les appareils tactiles
