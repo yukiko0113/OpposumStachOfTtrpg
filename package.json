@@ -3,10 +3,9 @@
     "start": "servor --reload"
   },
   "dependencies": {
-    "@popperjs/core": "^2.11.8",
+    "@floating-ui/dom": "^1.6.13",
     "bootstrap": "^5.3.3",
-    "servor": "^4.0.2",
-    "tippy.js": "^6.3.7"
+    "servor": "^4.0.2"
   },
   "devDependencies": {
     "vite": "^6.0.7"
